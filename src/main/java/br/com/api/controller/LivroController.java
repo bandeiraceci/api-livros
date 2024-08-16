@@ -28,7 +28,6 @@ public class LivroController {
 
 	private LivroService livroService = new LivroService();
 
-	// POSTA UM LIVRO
 	@PostMapping(value = "/livros")
 	public ResponseEntity<?> postLivroController(@RequestBody Livro livro) {
 		try {
