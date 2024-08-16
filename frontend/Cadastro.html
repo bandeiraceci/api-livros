@@ -1,0 +1,74 @@
+<html>
+
+<head>
+    <title>Biblioteca</title>
+</head>
+
+<h1> Cadastro de Livros </h1>
+
+<body>
+    <label for="id">ID: </label> <input id="id" type="id" required> <br>
+    <!--         <button>Consultar por ID</button> <br> -->
+    <label for="nome">Nome: </label> <input id="nome" type="text" required> <br>
+    <!-- <label for="datalancamento">Data de Lançamento: </label> <input datalancamento="datalancamento" id="datalancamento" type="date" required> <br>
+        <label for="autor">Autor(a): </label> <input autor="autor" id="autor" type="text" required> <br>
+        <label for="editora">Editora: </label> <input editora="editora" id="editora" type="text" required> <br>
+        <label for="numpags">Número de Páginas: </label> <input numpags="numpags" id="numpags" type="number" required> <br> -->
+    <!-- <label for="capa">Capa: </label> <input id="capa" type="file"> <br>
+        <label for="extensão">Extensão: </label> <input id="extensão" type="text" disabled="disabled"> <br> -->
+
+    <button onclick="postLivro()">Inserir</button>
+    <!--         <button onclick="getLivro()">Consultar</button>
+        <button>Atualizar</button>
+        <button>Deletar</button>
+        <button type="reset">Limpar</button> -->
+    <link rel="stylesheet" href="style.css">
+</body>
+
+<script>
+
+    async function postLivro() {
+        console.log("inserindo livro");
+        const id = document.getElementById("id").value
+        const nome = document.getElementById("nome").value
+        /* const datalancamento = document.getElementById("datalancamento").value
+        const autor = document.getElementById("autor").value
+        const editora = document.getElementById("editora").value
+        const numpags = document.getElementById("numpags").value */
+        let json = { id: id, nome: nome }
+
+        const url = 'http://localhost:8081/livros';
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(json),
+        };
+
+        try {
+            const response = await fetch(url, options);
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async function getLivro() {
+
+        const url = 'http://localhost:8081/livros';
+
+        await fetch(url)
+            .then(data => {
+                console.log(data)
+                return data.json();
+            }).catch(e => {
+                alert(e);
+                console.log(e);
+            });
+    }
+
+    /*     async function updateLivro(){}
+        async function deleteLivro(){} */
+
+</script>

@@ -1,0 +1,21 @@
+h1 {
+    text-align: center;
+}   
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+    background-color: thistle;
+}
+
+button {
+    padding: 5px;
+    text-align: center;
+    background-color: darkslateblue;
+    color: white;
+}
+
+input {
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
