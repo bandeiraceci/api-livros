@@ -116,7 +116,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="103" height="30" uuid="ca95657e-53f7-43c7-88ab-621428541f6b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{nome} != null ? $F{nome} : "--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -160,7 +160,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="91" height="30" uuid="d06e28a0-90e7-404e-b046-66142544315f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{autor}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{autor} != null ? $F{autor} : "--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -182,7 +182,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="83" height="30" uuid="95d76ff0-181e-4e0f-8817-9b8e29f339bd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{editora}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{editora} != null ? $F{editora} : "--"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

@@ -7,36 +7,42 @@
 <h1> Cadastro de Livros </h1>
 
 <body>
-    <label for="id">ID: </label> <input id="id" type="id" required> <br>
-    <!--         <button>Consultar por ID</button> <br> -->
-    <label for="nome">Nome: </label> <input id="nome" type="text" required> <br>
-    <!-- <label for="datalancamento">Data de Lançamento: </label> <input datalancamento="datalancamento" id="datalancamento" type="date" required> <br>
-        <label for="autor">Autor(a): </label> <input autor="autor" id="autor" type="text" required> <br>
-        <label for="editora">Editora: </label> <input editora="editora" id="editora" type="text" required> <br>
-        <label for="numpags">Número de Páginas: </label> <input numpags="numpags" id="numpags" type="number" required> <br> -->
-    <!-- <label for="capa">Capa: </label> <input id="capa" type="file"> <br>
-        <label for="extensão">Extensão: </label> <input id="extensão" type="text" disabled="disabled"> <br> -->
+    <h2>
+        Dados de Livros
+    </h2>
+    <label for="id">ID: </label> <input id="id" type="id">
+    <button onclick="getLivroId(id)">Consultar por ID</button> <br>
+    <label for="nome">Nome: </label> <input id="nome" type="text"> <br>
+    <label for="datalancamento">Data de Lançamento: </label> <input datalancamento="datalancamento" id="datalancamento"
+        type="date"> <br>
+    <label for="autor">Autor(a): </label> <input autor="autor" id="autor" type="text"> <br>
+    <label for="editora">Editora: </label> <input editora="editora" id="editora" type="text"> <br>
+    <label for="numpags">Número de Páginas: </label> <input numpags="numpags" id="numpags" type="number"> <br>
+    <label for="capa">Capa: </label> <input id="capa" type="file"> <br>
+    <label for="extensão">Extensão: </label> <input id="extensão" type="text" disabled="disabled"> <br>
 
     <button onclick="postLivro()">Inserir</button>
-    <!--         <button onclick="getLivro()">Consultar</button>
-        <button>Atualizar</button>
-        <button>Deletar</button>
-        <button type="reset">Limpar</button> -->
+    <button onclick="updateLivro(id)">Atualizar</button>
+    <button onclick="deleteLivro(id)">Deletar</button>
+    <button onclick="limpaCampos()">Limpar</button>
+    <a href="http://localhost:8081/relatorio">Gerar relatório</a>
+    <a href="http://localhost:8081/livros">Consultar todos</a>
     <link rel="stylesheet" href="style.css">
 </body>
 
 <script>
 
     async function postLivro() {
-        console.log("inserindo livro");
+        if (document.getElementById("capa") != null) {
+            postCapa();
+        }
         const id = document.getElementById("id").value
         const nome = document.getElementById("nome").value
-        /* const datalancamento = document.getElementById("datalancamento").value
+        const datalancamento = document.getElementById("datalancamento").value
         const autor = document.getElementById("autor").value
         const editora = document.getElementById("editora").value
-        const numpags = document.getElementById("numpags").value */
-        let json = { id: id, nome: nome }
-
+        const numpags = document.getElementById("numpags").value
+        let json = { id: id, nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = 'http://localhost:8081/livros';
         const options = {
             method: 'POST',
@@ -45,30 +51,87 @@
             },
             body: JSON.stringify(json),
         };
-
         try {
             const response = await fetch(url, options);
-            console.log(response);
+            alert("Livro inserido com sucesso!");
+            limpaCampos();
         } catch (error) {
             console.log(error.message);
         }
     }
 
-    async function getLivro() {
+    async function postCapa() {
 
-        const url = 'http://localhost:8081/livros';
-
-        await fetch(url)
-            .then(data => {
-                console.log(data)
-                return data.json();
-            }).catch(e => {
-                alert(e);
-                console.log(e);
-            });
     }
 
-    /*     async function updateLivro(){}
-        async function deleteLivro(){} */
+    async function getLivroId(id) {
+        const nome = document.getElementById("nome");
+        const datalancamento = document.getElementById("datalancamento");
+        const autor = document.getElementById("autor");
+        const editora = document.getElementById("editora");
+        const numpags = document.getElementById("numpags");
+        let json = { id: id, nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
+        const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data);
+            nome.value = JSON.stringify(data.nome).replace(/^"|"$/g, '');
+            datalancamento.value = data.datalancamento;
+            autor.value = JSON.stringify(data.autor).replace(/^"|"$/g, '');
+            editora.value = JSON.stringify(data.editora).replace(/^"|"$/g, '');
+            numpags.value = JSON.stringify(data.numpags);
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async function updateLivro(id) {
+        const nome = document.getElementById("nome").value;
+        const datalancamento = document.getElementById("datalancamento").value;;
+        const autor = document.getElementById("autor").value;;
+        const editora = document.getElementById("editora").value;;
+        const numpags = document.getElementById("numpags").value;;
+        const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        try {
+            const response = await fetch(url, options);
+            alert("Livro atualizado com sucesso!");
+            limpaCampos();
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async function deleteLivro(id) {
+        const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
+        const options = {
+            method: 'DELETE'
+        };
+        try {
+            const response = await fetch(url, options);
+            alert("Livro deletado com sucesso!");
+            limpaCampos();
+        } catch (error) {
+            console.log(error.message);
+            alert(error.message);
+        }
+    }
+
+    function limpaCampos() {
+        document.getElementById("id").value = "";
+        document.getElementById("nome").value = "";
+        document.getElementById("datalancamento").value = "";
+        document.getElementById("autor").value = "";
+        document.getElementById("editora").value = "";
+        document.getElementById("numpags").value = "";
+    }
 
 </script>

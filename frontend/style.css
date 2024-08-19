@@ -10,6 +10,8 @@ body {
 
 button {
     padding: 5px;
+    margin: 3px;
+    margin-bottom: 20px;
     text-align: center;
     background-color: darkslateblue;
     color: white;
