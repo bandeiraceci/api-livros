@@ -84,6 +84,16 @@ public class LivroController {
 		}
 	}
 
+	// BUSCA UMA CAPA DE LIVRO POR ID
+	@GetMapping(value = "/livros/capa/{id}")
+	public ResponseEntity<?> getIdCapaController(@PathVariable Long id) {
+		try {
+			return ResponseEntity.ok(livroService.getIdCapaService(id));
+		} catch (GeralException e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
+	}
+
 	// BUSCA RELATÓRIO DE LIVROS
 	@GetMapping(value = "/relatorio")
 	public ResponseEntity<?> getRelatorioController() throws GeralException, SQLException, JRException, IOException {

@@ -31,7 +31,7 @@ public class LivroService {
 		return livrorepository.getLivroRepository();
 	}
 
-	// RETORNA LISTA POR ID
+	// RETORNA LIVRO POR ID
 	public Livro getIdLivroService(Long id) throws GeralException {
 		Livro buscado = livrorepository.getIdLivroRepository(id);
 		if (buscado.getId() == null) {
@@ -73,6 +73,15 @@ public class LivroService {
 			throw new GeralException("Capa já cadastrada");
 		}
 		return livrorepository.postCapaRepository(conteudo, extensao, nomeArquivo, id);
+	}
+
+	// RETORNA CAPA POR ID
+	public Capa getIdCapaService(Long id) throws GeralException {
+		Capa buscada = livrorepository.getIdCapaRepository(id);
+		if (buscada.getCapa() == null) {
+			throw new GeralException("Capa não encontrada");
+		}
+		return livrorepository.getIdCapaRepository(id);
 	}
 
 	// BUSCA RELATÓRIO DE LIVROS
