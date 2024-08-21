@@ -2,22 +2,27 @@ h1 {
     text-align: center;
 }   
 
+h3 {
+    background-color: #b9aace;
+}
+
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: medium;
-    background-color: thistle;
+    background-color: #d8bfd8;
 }
 
 button {
-    padding: 5px;
-    margin: 3px;
-    margin-bottom: 20px;
+    padding: 4px;
+    margin-right: 4px;
+    margin-bottom: 10px;
     text-align: center;
     background-color: darkslateblue;
     color: white;
+    font-size: 15px;
 }
 
 input {
-    margin-bottom: 20px;
-    margin-right: 10px;
+    margin-bottom: 15px;
+    margin-right: 4px;
 }

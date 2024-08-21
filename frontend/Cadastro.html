@@ -7,35 +7,36 @@
 <h1> Cadastro de Livros </h1>
 
 <body>
-    <h2>
-        Dados de Livros
-    </h2>
+    <h3> Livro </h3>
     <label for="id">ID: </label> <input id="id" type="id">
-    <button onclick="getLivroId(id)">Consultar por ID</button> <br>
-    <label for="nome">Nome: </label> <input id="nome" type="text"> <br>
+    <button type="button" onclick="getLivroId()">Consultar Livro por ID</button>
+    <button type="button" onclick="getCapaId()">Consultar Capa por ID</button> <br>
+    <img id="capaimg" style="float: right;" height="250" alt="capa">
+    <label for="nome">Título: </label> <input id="nome" type="text"> <br>
     <label for="datalancamento">Data de Lançamento: </label> <input datalancamento="datalancamento" id="datalancamento"
         type="date"> <br>
     <label for="autor">Autor(a): </label> <input autor="autor" id="autor" type="text"> <br>
     <label for="editora">Editora: </label> <input editora="editora" id="editora" type="text"> <br>
     <label for="numpags">Número de Páginas: </label> <input numpags="numpags" id="numpags" type="number"> <br>
     <label for="capa">Capa: </label> <input id="capa" type="file"> <br>
-    <label for="extensão">Extensão: </label> <input id="extensão" type="text" disabled="disabled"> <br>
-
-    <button onclick="postLivro()">Inserir</button>
-    <button onclick="updateLivro(id)">Atualizar</button>
-    <button onclick="deleteLivro(id)">Deletar</button>
-    <button onclick="limpaCampos()">Limpar</button>
-    <a href="http://localhost:8081/relatorio">Gerar relatório</a>
-    <a href="http://localhost:8081/livros">Consultar todos</a>
+    <label for="extensão">Extensão: </label> <input id="extensao" type="text" disabled="disabled"> <br>
+    <button onclick="postLivro()">Cadastrar Livro</button>
+    <button onclick="postCapa()">Cadastrar Capa</button> <br>
+    <button onclick="updateLivro()">Atualizar Livro</button>
+    <button onclick="deleteLivro()">Deletar Dados</button>
+    <button onclick="limpaCampos()">Limpar campos</button> <br>
+    <h3> Consulta à Biblioteca </h3>
+    <div>
+        <a href="http://localhost:8081/livros">Consultar todos os livros</a>
+        <em> / </em>
+        <a href="http://localhost:8081/relatorio">Gerar relatório</a>
+    </div>
     <link rel="stylesheet" href="style.css">
 </body>
 
 <script>
 
     async function postLivro() {
-        if (document.getElementById("capa") != null) {
-            postCapa();
-        }
         const id = document.getElementById("id").value
         const nome = document.getElementById("nome").value
         const datalancamento = document.getElementById("datalancamento").value
@@ -53,18 +54,41 @@
         };
         try {
             const response = await fetch(url, options);
-            alert("Livro inserido com sucesso!");
-            limpaCampos();
+            if (!response.ok) {
+                alert("Erro ao cadastrar livro");
+            } else {
+                alert("Livro cadastrado com sucesso!");
+                limpaCampos();
+            }
         } catch (error) {
             console.log(error.message);
         }
     }
 
     async function postCapa() {
-
+        const url = 'http://localhost:8081/livros/capa/' + document.getElementById("id").value;
+        const formData = new FormData();
+        const capaFile = document.getElementById("capa").files[0];
+        console.log("capa: " + document.getElementById("capa").files[0]);
+        console.log("capaFile: " + capaFile);
+        formData.append('capa', capaFile);
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        try {
+            const response = await fetch(url, options)
+            if (!response.ok) {
+                alert('Erro ao cadastrar capa');
+            }
+            alert("Capa cadastrada com sucesso");
+            extensao.value = extensao;
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
-    async function getLivroId(id) {
+    async function getLivroId() {
         const nome = document.getElementById("nome");
         const datalancamento = document.getElementById("datalancamento");
         const autor = document.getElementById("autor");
@@ -75,50 +99,93 @@
 
         try {
             const response = await fetch(url);
-            const data = await response.json();
-            console.log(data);
-            nome.value = JSON.stringify(data.nome).replace(/^"|"$/g, '');
-            datalancamento.value = data.datalancamento;
-            autor.value = JSON.stringify(data.autor).replace(/^"|"$/g, '');
-            editora.value = JSON.stringify(data.editora).replace(/^"|"$/g, '');
-            numpags.value = JSON.stringify(data.numpags);
-
+            if (!response.ok) {
+                alert("Erro ao consultar livro");
+            } else {
+                const data = await response.json();
+                console.log(data);
+                nome.value = JSON.stringify(data.nome).replace(/^"|"$/g, '');
+                datalancamento.value = data.datalancamento;
+                autor.value = JSON.stringify(data.autor).replace(/^"|"$/g, '');
+                editora.value = JSON.stringify(data.editora).replace(/^"|"$/g, '');
+                numpags.value = JSON.stringify(data.numpags);
+            }
         } catch (error) {
             console.log(error.message);
         }
     }
 
-    async function updateLivro(id) {
+    async function getCapaId() {
+        const capaFile = document.getElementById("capa").files[0];
+        const extensao = document.getElementById("extensao");
+        const capaimg = document.getElementById("capaimg");
+        const url = `http://localhost:8081/livros/capa/` + document.getElementById("id").value;
+        const reader = new FileReader();
+        const blob = new Blob([capaFile], { type: 'text/plain' });
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                alert("Erro ao consultar Capa");
+            } else {
+                const data = await response.json();
+                reader.onload = function (event) {
+                    capaimg.src = event.target.result;
+                }
+                reader.readAsDataURL(blob);
+                console.log(reader);
+                extensao.value = JSON.stringify("." + data.extensao).replace(/^"|"$/g, '');
+                /* const data = await response.json();
+                capaimg.src = data.capa;
+                console.log("data capa: " + data.capa);
+                extensao.value = JSON.stringify("." + data.extensao).replace(/^"|"$/g, '');; */
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async function updateLivro() {
         const nome = document.getElementById("nome").value;
-        const datalancamento = document.getElementById("datalancamento").value;;
-        const autor = document.getElementById("autor").value;;
-        const editora = document.getElementById("editora").value;;
-        const numpags = document.getElementById("numpags").value;;
+        const datalancamento = document.getElementById("datalancamento").value;
+        const autor = document.getElementById("autor").value;
+        const editora = document.getElementById("editora").value;
+        const numpags = document.getElementById("numpags").value;
+        let json = { nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
         const options = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(json),
         };
         try {
             const response = await fetch(url, options);
-            alert("Livro atualizado com sucesso!");
-            limpaCampos();
+            if (!response.ok) {
+                alert(response);
+            } else {
+                alert("Livro atualizado com sucesso!");
+                limpaCampos();
+            }
         } catch (error) {
             console.log(error.message);
         }
     }
 
-    async function deleteLivro(id) {
+    async function deleteLivro() {
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
         const options = {
             method: 'DELETE'
         };
         try {
             const response = await fetch(url, options);
-            alert("Livro deletado com sucesso!");
-            limpaCampos();
+            if (!response.ok) {
+                alert("Erro ao deletar livro");
+            } else {
+                alert("Livro deletado com sucesso!");
+                limpaCampos();
+            }
         } catch (error) {
             console.log(error.message);
             alert(error.message);
@@ -126,12 +193,14 @@
     }
 
     function limpaCampos() {
-        document.getElementById("id").value = "";
-        document.getElementById("nome").value = "";
-        document.getElementById("datalancamento").value = "";
-        document.getElementById("autor").value = "";
-        document.getElementById("editora").value = "";
-        document.getElementById("numpags").value = "";
+        document.getElementById("id").value = null;
+        document.getElementById("nome").value = null;
+        document.getElementById("datalancamento").value = null;
+        document.getElementById("autor").value = null;
+        document.getElementById("editora").value = null;
+        document.getElementById("numpags").value = null;
+        document.getElementById("capa").value = null;
+        document.getElementById("extensao").value = null;
     }
 
 </script>
