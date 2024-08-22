@@ -28,6 +28,7 @@ public class LivroController {
 
 	private LivroService livroService = new LivroService();
 
+	// POSTA UM LIVRO
 	@PostMapping(value = "/livros")
 	public ResponseEntity<?> postLivroController(@RequestBody Livro livro) {
 		try {
@@ -88,7 +89,8 @@ public class LivroController {
 	@GetMapping(value = "/livros/capa/{id}")
 	public ResponseEntity<?> getIdCapaController(@PathVariable Long id) {
 		try {
-			return ResponseEntity.ok(livroService.getIdCapaService(id));
+			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
+					.body(livroService.getIdCapaService(id));
 		} catch (GeralException e) {
 			return ResponseEntity.ok(e.getMessage());
 		}

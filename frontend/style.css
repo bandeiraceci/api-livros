@@ -1,6 +1,6 @@
 h1 {
     text-align: center;
-}   
+}
 
 h3 {
     background-color: #b9aace;
@@ -25,4 +25,9 @@ button {
 input {
     margin-bottom: 15px;
     margin-right: 4px;
+}
+
+img {
+    margin-right: 50px;
+    border: 3px solid #b9aace;
 }

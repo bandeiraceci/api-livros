@@ -114,7 +114,10 @@ public class LivroRepository {
 			String sql = "UPDATE livro SET nome = ?, data_lancamento = ?, autor = ?, editora = ?, numero_paginas = ? WHERE id = "
 					+ id;
 			PreparedStatement statement = con.prepareStatement(sql);
-			java.sql.Date sqldate = new java.sql.Date(livro.getDatalancamento().getTime() + 86400000);
+			java.sql.Date sqldate = null;
+			if (livro.getDatalancamento() != null) {
+				sqldate = new java.sql.Date(livro.getDatalancamento().getTime() + 86400000);
+			}
 			statement.setString(1, livro.getNome());
 			statement.setDate(2, sqldate);
 			statement.setString(3, livro.getAutor());
@@ -183,6 +186,22 @@ public class LivroRepository {
 				capa.setExtensao(result.getString("extensao"));
 			}
 			return capa;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	// BUSCA CAPA NO BANCO POR ID (BYTE)
+	public byte[] getIdCapaRepositoryByte(Long id) {
+		try {
+			Connection con = Datasource.getConnection();
+			String sql = "SELECT * FROM capa WHERE id =" + id;
+			Statement statement = con.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			if (result.next()) {
+				return result.getBytes("capa");
+			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}

@@ -7,11 +7,10 @@
 <h1> Cadastro de Livros </h1>
 
 <body>
-    <h3> Livro </h3>
+    <h3> Dados de Livro </h3>
     <label for="id">ID: </label> <input id="id" type="id">
-    <button type="button" onclick="getLivroId()">Consultar Livro por ID</button>
-    <button type="button" onclick="getCapaId()">Consultar Capa por ID</button> <br>
-    <img id="capaimg" style="float: right;" height="250" alt="capa">
+    <button type="button" onclick="getLivroId()">Consultar Dados por ID</button> <br>
+    <img id="capaimg" style="float: right;" height="300" alt="capa">
     <label for="nome">Título: </label> <input id="nome" type="text"> <br>
     <label for="datalancamento">Data de Lançamento: </label> <input datalancamento="datalancamento" id="datalancamento"
         type="date"> <br>
@@ -26,11 +25,9 @@
     <button onclick="deleteLivro()">Deletar Dados</button>
     <button onclick="limpaCampos()">Limpar campos</button> <br>
     <h3> Consulta à Biblioteca </h3>
-    <div>
-        <a href="http://localhost:8081/livros">Consultar todos os livros</a>
-        <em> / </em>
-        <a href="http://localhost:8081/relatorio">Gerar relatório</a>
-    </div>
+    <a href="http://localhost:8081/livros">Consultar todos os livros</a>
+    <em> / </em>
+    <a href="http://localhost:8081/relatorio">Gerar relatório</a>
     <link rel="stylesheet" href="style.css">
 </body>
 
@@ -43,6 +40,10 @@
         const autor = document.getElementById("autor").value
         const editora = document.getElementById("editora").value
         const numpags = document.getElementById("numpags").value
+        if (!id) {
+            alert("Campo 'ID' é de preenchimento obrigatório!");
+            return;
+        }
         let json = { id: id, nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = 'http://localhost:8081/livros';
         const options = {
@@ -52,25 +53,30 @@
             },
             body: JSON.stringify(json),
         };
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                alert("Erro ao cadastrar livro");
-            } else {
-                alert("Livro cadastrado com sucesso!");
-                limpaCampos();
-            }
-        } catch (error) {
-            console.log(error.message);
-        }
+        /* try { */
+        await fetch(url, options).then((resposta) => {
+            console.log("then: ", resposta);
+            limpaCampos();
+            alert("Livro cadastrado com sucesso!");
+        }).catch(erro => {
+            console.log("erro: ", erro);
+        });
+        /* console.log(response);
+        if (!response.ok) {
+            alert("Erro ao cadastrar livro");
+        } else {
+            alert("Livro cadastrado com sucesso!");
+            limpaCampos();
+        } */
+        /*         } catch (error) {
+                    console.log("erro: ", error);
+                } */
     }
 
     async function postCapa() {
         const url = 'http://localhost:8081/livros/capa/' + document.getElementById("id").value;
         const formData = new FormData();
         const capaFile = document.getElementById("capa").files[0];
-        console.log("capa: " + document.getElementById("capa").files[0]);
-        console.log("capaFile: " + capaFile);
         formData.append('capa', capaFile);
         const options = {
             method: 'POST',
@@ -79,10 +85,10 @@
         try {
             const response = await fetch(url, options)
             if (!response.ok) {
-                alert('Erro ao cadastrar capa');
+                alert("Erro ao cadastrar capa");
+            } else {
+                alert("Capa cadastrada com sucesso!");
             }
-            alert("Capa cadastrada com sucesso");
-            extensao.value = extensao;
         } catch (error) {
             console.log(error.message);
         }
@@ -94,8 +100,11 @@
         const autor = document.getElementById("autor");
         const editora = document.getElementById("editora");
         const numpags = document.getElementById("numpags");
-        let json = { id: id, nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
+        if (!document.getElementById("id").value) {
+            alert("Campo 'ID' é de preenchimento obrigatório!");
+            return;
+        }
 
         try {
             const response = await fetch(url);
@@ -109,6 +118,8 @@
                 autor.value = JSON.stringify(data.autor).replace(/^"|"$/g, '');
                 editora.value = JSON.stringify(data.editora).replace(/^"|"$/g, '');
                 numpags.value = JSON.stringify(data.numpags);
+                getCapaId();
+                // pega extensão
             }
         } catch (error) {
             console.log(error.message);
@@ -117,28 +128,20 @@
 
     async function getCapaId() {
         const capaFile = document.getElementById("capa").files[0];
-        const extensao = document.getElementById("extensao");
         const capaimg = document.getElementById("capaimg");
         const url = `http://localhost:8081/livros/capa/` + document.getElementById("id").value;
-        const reader = new FileReader();
-        const blob = new Blob([capaFile], { type: 'text/plain' });
+        const options = {
+            method: 'GET',
+            responseType: 'blob',
+        };
 
         try {
-            const response = await fetch(url);
+            await fetch(url, options).then((response) => response.blob()).then((arquivo) => {
+                const objectURL = URL.createObjectURL(arquivo);
+                capaimg.src = objectURL;
+            });
             if (!response.ok) {
-                alert("Erro ao consultar Capa");
-            } else {
-                const data = await response.json();
-                reader.onload = function (event) {
-                    capaimg.src = event.target.result;
-                }
-                reader.readAsDataURL(blob);
-                console.log(reader);
-                extensao.value = JSON.stringify("." + data.extensao).replace(/^"|"$/g, '');
-                /* const data = await response.json();
-                capaimg.src = data.capa;
-                console.log("data capa: " + data.capa);
-                extensao.value = JSON.stringify("." + data.extensao).replace(/^"|"$/g, '');; */
+                alert("Erro ao consultar capa");
             }
         } catch (error) {
             console.log(error.message);
@@ -151,6 +154,10 @@
         const autor = document.getElementById("autor").value;
         const editora = document.getElementById("editora").value;
         const numpags = document.getElementById("numpags").value;
+        if (!datalancamento) {
+            alert("Campo 'Data de Lançamento' é de preenchimento obrigatório!");
+            return;
+        }
         let json = { nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
         const options = {

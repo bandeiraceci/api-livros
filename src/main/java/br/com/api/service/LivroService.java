@@ -76,12 +76,12 @@ public class LivroService {
 	}
 
 	// RETORNA CAPA POR ID
-	public Capa getIdCapaService(Long id) throws GeralException {
+	public byte[] getIdCapaService(Long id) throws GeralException {
 		Capa buscada = livrorepository.getIdCapaRepository(id);
 		if (buscada.getCapa() == null) {
 			throw new GeralException("Capa não encontrada");
 		}
-		return livrorepository.getIdCapaRepository(id);
+		return livrorepository.getIdCapaRepositoryByte(id);
 	}
 
 	// BUSCA RELATÓRIO DE LIVROS
