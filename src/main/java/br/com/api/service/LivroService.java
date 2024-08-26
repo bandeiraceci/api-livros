@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.api.domain.Capa;
 import br.com.api.domain.Livro;
+import br.com.api.domain.DTO.CapaDTO;
 import br.com.api.domain.DTO.LivroDTO;
 import br.com.api.exceptions.GeralException;
 import br.com.api.repository.LivroRepository;
@@ -66,10 +66,10 @@ public class LivroService {
 		String nomeArquivo = capa.getOriginalFilename();
 
 		Livro buscado = livrorepository.getIdLivroRepository(id);
-		Capa buscada = livrorepository.getIdCapaRepository(id);
+		CapaDTO buscada = livrorepository.getIdCapaRepository(id);
 		if (buscado.getId() == null) {
 			throw new GeralException("Livro não encontrado para inserção de capa");
-		} else if (buscada.getCapa() != null) {
+		} else if (buscada.getNomeArquivo() != null) {
 			throw new GeralException("Capa já cadastrada");
 		}
 		return livrorepository.postCapaRepository(conteudo, extensao, nomeArquivo, id);
@@ -77,11 +77,20 @@ public class LivroService {
 
 	// RETORNA CAPA POR ID
 	public byte[] getIdCapaService(Long id) throws GeralException {
-		Capa buscada = livrorepository.getIdCapaRepository(id);
-		if (buscada.getCapa() == null) {
+		CapaDTO buscada = livrorepository.getIdCapaRepository(id);
+		if (buscada.getNomeArquivo() == null) {
 			throw new GeralException("Capa não encontrada");
 		}
 		return livrorepository.getIdCapaRepositoryByte(id);
+	}
+
+	// RETORNA DETALHES DA CAPA
+	public CapaDTO getDetailsCapaService(Long id) throws GeralException {
+		CapaDTO buscada = livrorepository.getIdCapaRepository(id);
+		if (buscada.getExtensao() == null) {
+			throw new GeralException("Extensão de capa não encontrada");
+		}
+		return livrorepository.getIdCapaRepository(id);
 	}
 
 	// BUSCA RELATÓRIO DE LIVROS

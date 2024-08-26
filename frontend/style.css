@@ -3,7 +3,9 @@ h1 {
 }
 
 h3 {
+    position: relative;
     background-color: #b9aace;
+    text-align: center;
 }
 
 body {
@@ -20,6 +22,7 @@ button {
     background-color: darkslateblue;
     color: white;
     font-size: 15px;
+    width: 170px;
 }
 
 input {
@@ -27,7 +30,17 @@ input {
     margin-right: 4px;
 }
 
+div.form {
+    position: relative;
+} 
+
+div.links {
+    position: relative;
+    text-align: center;
+}
+
 img {
     margin-right: 50px;
     border: 3px solid #b9aace;
+    height: 65%;
 }

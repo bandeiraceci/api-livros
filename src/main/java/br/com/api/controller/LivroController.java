@@ -60,17 +60,17 @@ public class LivroController {
 		try {
 			return ResponseEntity.ok(livroService.updateLivroService(id, livro));
 		} catch (GeralException e) {
-			return ResponseEntity.ok(e.getMessage());
+			return ResponseEntity.internalServerError().body(e.getMessage());
 		}
 	}
 
 	// DELETA UM LIVRO E CAPA
 	@DeleteMapping(value = "/livros/{id}")
-	public String deleteLivroController(@PathVariable Long id) {
+	public ResponseEntity<?> deleteLivroController(@PathVariable Long id) {
 		try {
-			return livroService.deleteLivroService(id);
+			return ResponseEntity.ok(livroService.deleteLivroService(id));
 		} catch (GeralException e) {
-			return e.getMessage();
+			return ResponseEntity.internalServerError().body(e.getMessage());
 		}
 	}
 
@@ -87,12 +87,22 @@ public class LivroController {
 
 	// BUSCA UMA CAPA DE LIVRO POR ID
 	@GetMapping(value = "/livros/capa/{id}")
-	public ResponseEntity<?> getIdCapaController(@PathVariable Long id) {
+	public ResponseEntity<?> getIdCapaController(@PathVariable Long id) throws GeralException {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG)
 					.body(livroService.getIdCapaService(id));
 		} catch (GeralException e) {
-			return ResponseEntity.ok(e.getMessage());
+			return ResponseEntity.internalServerError().body(e.getMessage());
+		}
+	}
+
+	// BUSCA DETALHES DA CAPA
+	@GetMapping(value = "/livros/capa/details/{id}")
+	public ResponseEntity<?> getDetailsCapaController(@PathVariable Long id) throws GeralException {
+		try {
+			return ResponseEntity.ok(livroService.getDetailsCapaService(id));
+		} catch (GeralException e) {
+			return ResponseEntity.internalServerError().body(e.getMessage());
 		}
 	}
 

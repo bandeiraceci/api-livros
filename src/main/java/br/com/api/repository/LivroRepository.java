@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.api.config.Datasource;
-import br.com.api.domain.Capa;
 import br.com.api.domain.Livro;
 import br.com.api.domain.DTO.CapaDTO;
 import br.com.api.domain.DTO.LivroDTO;
@@ -174,18 +173,18 @@ public class LivroRepository {
 	}
 
 	// BUSCA CAPA NO BANCO POR ID
-	public Capa getIdCapaRepository(Long id) {
+	public CapaDTO getIdCapaRepository(Long id) {
 		try {
 			Connection con = Datasource.getConnection();
 			String sql = "SELECT * FROM capa WHERE id =" + id;
 			Statement statement = con.createStatement();
 			ResultSet result = statement.executeQuery(sql);
-			Capa capa = new Capa();
+			CapaDTO capadto = new CapaDTO();
 			if (result.next()) {
-				capa.setCapa(result.getBytes("capa"));
-				capa.setExtensao(result.getString("extensao"));
+				capadto.setNomeArquivo(result.getString("nome_arquivo"));
+				capadto.setExtensao(result.getString("extensao"));
 			}
-			return capa;
+			return capadto;
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
