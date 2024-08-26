@@ -81,7 +81,7 @@ public class LivroController {
 		try {
 			return ResponseEntity.ok(livroService.postCapaService(capa, id));
 		} catch (GeralException e) {
-			return ResponseEntity.ok(e.getMessage());
+			return ResponseEntity.internalServerError().body(e.getMessage());
 		}
 	}
 
