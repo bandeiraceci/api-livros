@@ -152,6 +152,23 @@ public class LivroRepository {
 		return "Não foi possível deletar o livro";
 	}
 
+	// DELETA CAPA NO BANCO
+	public String deleteCapaRepository(Long id) throws GeralException {
+		try {
+			Connection con = Datasource.getConnection();
+			String sqlcapa = "DELETE FROM capa WHERE id = " + id;
+			PreparedStatement statementcapa = con.prepareStatement(sqlcapa);
+			int rowsDeletedCapa = statementcapa.executeUpdate();
+			if (rowsDeletedCapa > 0) {
+				return "Capa excluída com sucesso";
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new GeralException(ex.getMessage());
+		}
+		return "Não foi possível deletar a capa";
+	}
+
 	// SALVA CAPA NO BANCO
 	public byte[] postCapaRepository(byte[] capa, String extensao, String nomeArquivo, Long id) {
 		try {

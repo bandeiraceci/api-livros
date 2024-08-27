@@ -74,6 +74,16 @@ public class LivroController {
 		}
 	}
 
+	// DELETA UMA CAPA
+	@DeleteMapping(value = "/livros/capa/{id}")
+	public ResponseEntity<?> deleteCapaController(@PathVariable Long id) {
+		try {
+			return ResponseEntity.ok(livroService.deleteCapaService(id));
+		} catch (GeralException e) {
+			return ResponseEntity.internalServerError().body(e.getMessage());
+		}
+	}
+
 	// POSTA UMA CAPA DE LIVRO
 	@PostMapping(value = "/livros/capa/{id}")
 	public ResponseEntity<?> postCapaController(@RequestPart("capa") MultipartFile capa, @PathVariable Long id)

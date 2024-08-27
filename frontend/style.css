@@ -16,13 +16,26 @@ body {
 
 button {
     padding: 4px;
-    margin-right: 4px;
+    margin-right: 10px;
     margin-bottom: 10px;
     text-align: center;
     background-color: darkslateblue;
     color: white;
     font-size: 15px;
     width: 170px;
+    border: 2px solid rgb(25, 6, 50);
+}
+
+#limpa {
+    background-color: rgb(99, 87, 179);
+    color: white;
+}
+
+button:hover,
+#limpa:hover {
+    transition: 0.3s;
+    background-color: rgb(71, 36, 109);
+    color: white;
 }
 
 input {
@@ -32,7 +45,7 @@ input {
 
 div.form {
     position: relative;
-} 
+}
 
 div.links {
     position: relative;
@@ -42,5 +55,5 @@ div.links {
 img {
     margin-right: 50px;
     border: 3px solid #b9aace;
-    height: 65%;
+    height: 400px;
 }

@@ -23,9 +23,10 @@
         <label for="extensão">Extensão: </label> <input id="extensao" type="text" disabled="disabled"> <br>
         <button onclick="postLivro()">Cadastrar Livro</button>
         <button onclick="postCapa()">Cadastrar Capa</button> <br>
+        <button onclick="deleteLivro()">Deletar Livro + Capa</button>
+        <button onclick="deleteCapa()">Deletar Capa</button> <br>
         <button onclick="updateLivro()">Atualizar Livro</button>
-        <button onclick="deleteLivro()">Deletar Dados</button>
-        <button onclick="limpaCampos()">Limpar campos</button> <br>
+        <button id="limpa" onclick="limpaCampos()">Limpar campos</button> <br>
     </div>
     <h3> Consulta à Biblioteca </h3>
     <div class="links">
@@ -45,14 +46,7 @@
         const autor = document.getElementById("autor").value
         const editora = document.getElementById("editora").value
         const numpags = document.getElementById("numpags").value
-        var contaid = verificaId(id, 0);
-        var contaerro = verificaPostPut(id, numpags, 0);
-        if (contaid > 0) {
-            return;
-        }
-        if (contaerro > 0) {
-            return;
-        }
+
         let json = { id: id, nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
         const url = 'http://localhost:8081/livros';
         const options = {
@@ -81,11 +75,13 @@
     }
 
     async function postCapa() {
-        const url = 'http://localhost:8081/livros/capa/' + document.getElementById("id").value;
-        var contaid = verificaId(id, 0);
-        if (contaid > 0) {
+
+        if (document.getElementById("capa").files[0] == null) {
+            alert("Campo 'Capa' precisa de um arquivo");
             return;
         }
+
+        const url = `http://localhost:8081/livros/capa/` + document.getElementById("id").value;
         const formData = new FormData();
         const capaFile = document.getElementById("capa").files[0];
         formData.append('capa', capaFile);
@@ -93,7 +89,6 @@
             method: 'POST',
             body: formData,
         };
-
         await fetch(url, options)
             .then(res => {
                 if (!res.ok) {
@@ -115,10 +110,6 @@
         const editora = document.getElementById("editora");
         const numpags = document.getElementById("numpags");
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
-        var contaid = verificaId(document.getElementById("id").value, 0);
-        if (contaid > 0) {
-            return;
-        }
         try {
             await fetch(url)
                 .then(res => {
@@ -211,14 +202,6 @@
         const editora = document.getElementById("editora").value;
         const numpags = document.getElementById("numpags").value;
         let json = { nome: nome, datalancamento: datalancamento, autor: autor, editora: editora, numpags: numpags }
-        var contaid = verificaId(document.getElementById("id").value, 0);
-        var contaerro = verificaPostPut(document.getElementById("id").value, numpags, 0);
-        if (contaid > 0) {
-            return;
-        }
-        if (contaerro > 0) {
-            return;
-        }
         const url = `http://localhost:8081/livros/` + document.getElementById("id").value;
         const options = {
             method: 'PUT',
@@ -251,10 +234,6 @@
         const options = {
             method: 'DELETE'
         };
-        var contaid = verificaId(document.getElementById("id").value, 0);
-        if (contaid > 0) {
-            return;
-        }
         try {
             await fetch(url, options)
                 .then(res => {
@@ -265,6 +244,30 @@
                 .then(function (json) {
                     limpaCampos();
                     alert("Livro deletado com sucesso!");
+                })
+                .catch(error => {
+                    alert(error);
+                });
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async function deleteCapa() {
+        const url = `http://localhost:8081/livros/capa/` + document.getElementById("id").value;
+        const options = {
+            method: 'DELETE'
+        };
+        try {
+            await fetch(url, options)
+                .then(res => {
+                    if (!res.ok) {
+                        return res.text().then(text => { throw new Error(text) })
+                    }
+                })
+                .then(function (json) {
+                    limpaCapa();
+                    alert("Capa deletada com sucesso!");
                 })
                 .catch(error => {
                     alert(error);
@@ -288,26 +291,6 @@
         document.getElementById("capa").value = null;
         document.getElementById("extensao").value = null;
         capaimg.src = "default.png";
-    }
-
-    function verificaId(id, contaid) {
-        if (!id) {
-            alert("Campo 'ID' é de preenchimento obrigatório!");
-            contaid = contaid + 1;
-        }
-        return contaid;
-    }
-
-    function verificaPostPut(id, numpags, contaerro) {
-        if (id == 0 || id < 0) {
-            alert("Campo 'ID' não pode ser nulo / negativo!");
-            contaerro = contaerro + 1;
-        }
-        if (numpags < 0) {
-            alert("Campo 'Número de Páginas' não pode ser negativo!");
-            contaerro = contaerro + 1;
-        }
-        return contaerro;
     }
 
 </script>

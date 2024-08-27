@@ -2,6 +2,7 @@ package br.com.api.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -17,11 +18,43 @@ public class LivroService {
 
 	private LivroRepository livrorepository = new LivroRepository();
 
+	// VERIFICA IDS
+	public GeralException verificaId(Long id) throws GeralException {
+		if (id == null || id <= 0) {
+			throw new GeralException("Campo 'ID' deve ser maior que 0");
+		}
+		return null;
+	}
+
+	// VERIFICA DATA DE LANÇAMENTO
+	public GeralException verificaData(Date datalancamento) throws GeralException {
+		Date currentdata = new Date(System.currentTimeMillis());
+		if (datalancamento.after(currentdata)) {
+			throw new GeralException("Campo 'Data de Lançamento' não pode ser maior que o dia atual");
+		}
+		return null;
+	}
+
+	// VERIFICA NÚMERO DE PÁGINA
+	public GeralException verificaPags(int numpags) throws GeralException {
+		if (numpags < 0) {
+			throw new GeralException("Campo 'Número de Páginas' deve ser maior ou igual a 0");
+		}
+		return null;
+	}
+
 	// CRIA LIVRO NO BANCO DE DADOS
 	public Livro postLivroService(Livro livro) throws GeralException {
 		Livro buscado = livrorepository.getIdLivroRepository(livro.getId());
 		if (buscado.getId() != null) {
 			throw new GeralException("Livro já cadastrado");
+		}
+		verificaId(livro.getId());
+		if (livro.getDatalancamento() != null) {
+			verificaData(livro.getDatalancamento());
+		}
+		if (livro.getNumpags() != null) {
+			verificaPags(livro.getNumpags());
 		}
 		return livrorepository.postLivroRepository(livro);
 	}
@@ -46,6 +79,13 @@ public class LivroService {
 		if (buscado.getId() == null) {
 			throw new GeralException("Livro não encontrado para atualização");
 		}
+		verificaId(id);
+		if (livro.getDatalancamento() != null) {
+			verificaData(livro.getDatalancamento());
+		}
+		if (livro.getNumpags() != null) {
+			verificaPags(livro.getNumpags());
+		}
 		return livrorepository.updateLivroRepository(id, livro);
 	}
 
@@ -55,13 +95,27 @@ public class LivroService {
 		if (buscado.getId() == null) {
 			throw new GeralException("Livro não encontrado para deleção");
 		}
+		verificaId(id);
 		return livrorepository.deleteLivroRepository(id);
+	}
+
+	// DELETA CAPA NO BANCO DE DADOS
+	public String deleteCapaService(Long id) throws GeralException {
+		CapaDTO buscada = livrorepository.getIdCapaRepository(id);
+		if (buscada.getNomeArquivo() == null) {
+			throw new GeralException("Capa não encontrada para deleção");
+		}
+		verificaId(id);
+		return livrorepository.deleteCapaRepository(id);
 	}
 
 	// CRIA CAPA NO BANCO DE DADOS
 	public byte[] postCapaService(MultipartFile capa, Long id) throws GeralException, IOException {
 
 		byte[] conteudo = capa.getBytes();
+		if (conteudo.length == 0) {
+			throw new GeralException("Campo 'Capa' precisa de um arquivo");
+		}
 		String extensao = capa.getContentType().substring(6);
 		String nomeArquivo = capa.getOriginalFilename();
 
