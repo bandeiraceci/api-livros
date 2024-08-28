@@ -228,7 +228,7 @@ public class LivroRepository {
 	public byte[] getRelatorioRepository() throws SQLException, JRException, IOException {
 		List<Livro> list = new ArrayList<Livro>();
 		Connection con = Datasource.getConnection();
-		String sql = "SELECT * FROM livro";
+		String sql = "SELECT * FROM livro ORDER BY id asc";
 		Statement statement = con.createStatement();
 		ResultSet result = statement.executeQuery(sql);
 		while (result.next()) {
