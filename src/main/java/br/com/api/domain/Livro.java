@@ -24,7 +24,7 @@ public class Livro {
 	}
 
 	public void setNome(String nome) {
-		if (nome.isEmpty()) {
+		if (nome == null || nome.isEmpty()) {
 			nome = null;
 		}
 		this.nome = nome;
@@ -43,7 +43,7 @@ public class Livro {
 	}
 
 	public void setAutor(String autor) {
-		if (autor.isEmpty()) {
+		if (autor == null || autor.isEmpty()) {
 			autor = null;
 		}
 		this.autor = autor;
@@ -54,7 +54,7 @@ public class Livro {
 	}
 
 	public void setEditora(String editora) {
-		if (editora.isEmpty()) {
+		if (editora == null || editora.isEmpty()) {
 			editora = null;
 		}
 		this.editora = editora;

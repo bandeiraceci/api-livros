@@ -121,11 +121,12 @@
                     }
                 })
                 .then(function (json) {
-                    nome.value = JSON.stringify(json.nome).replace(/^"|"$/g, '');
+                    nome.value = json.nome;
                     datalancamento.value = json.datalancamento;
-                    autor.value = JSON.stringify(json.autor).replace(/^"|"$/g, '');
-                    editora.value = JSON.stringify(json.editora).replace(/^"|"$/g, '');
-                    numpags.value = JSON.stringify(json.numpags);
+                    autor.value = json.autor;
+                    editora.value = json.editora;
+                    numpags.value = json.numpags;
+                    console.log(json)
                     getCapaId();
                 })
                 .catch(error => {
